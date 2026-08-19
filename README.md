@@ -10,3 +10,7 @@
     ```
 - Create a notebook to call llm
     `python -m notebook`
+
+# 2. Health Analysis 
+workflow 
+![Health analysis workflow](2_health_analysis/work-flow.png)
