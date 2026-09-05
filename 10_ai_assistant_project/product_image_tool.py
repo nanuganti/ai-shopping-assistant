@@ -13,7 +13,7 @@ load_dotenv()
 DB_PATH = os.path.join(os.path.dirname(__file__), "store.db")
 
 llm = ChatGroq(model="qwen/qwen3-32b", temperature=0)
-vision_llm = ChatGroq(model="meta-llama/llama-4-scout-17b-16e-instruct", temperature=0)
+vision_llm = ChatGroq(model="qwen/qwen3.6-27b", temperature=0)
 
 def _describe_product_image(image_path: str) -> str:
     """
@@ -52,7 +52,7 @@ describe_product_image = tool(_describe_product_image)
 
 if __name__ == "__main__":
     # Single product
-    result = _describe_product_image("resources/honey.png")
+    result = _describe_product_image(os.path.join(os.path.dirname(__file__), "resources", "honey.png"))
     print("Product description for 'honey':")
     print(result)
 
