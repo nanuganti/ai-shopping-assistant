@@ -17,8 +17,8 @@ from langchain_groq import ChatGroq
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "store.db")
 
-@tool
-def search_products(query: str, max_price: Optional[float] = None, is_organic: Optional[bool] = None) -> str:
+
+def _search_products(query: str, max_price: Optional[float] = None, is_organic: Optional[bool] = None) -> str:
     """
     Search the product database by keyword (matched against name, description, and category).
     Optionally filter by maximum price and/or organic status.
@@ -61,46 +61,11 @@ def search_products(query: str, max_price: Optional[float] = None, is_organic: O
     ]
     return json.dumps(products)
 
-
-# create a method to describe product image using a string of base64 encoded image and return a description of the product
-@tool
-def describe_product_image(image_path: str) -> str:
-    """
-    Analyze a product image and return its key attributes as a JSON object.
-    Use this when the user uploads a photo of a product they are interested in.
-    The returned attributes can be used directly with search_products.
-    """
-    with open(image_path, "rb") as f:
-        image_data = base64.b64encode(f.read()).decode()
-
-    ext = os.path.splitext(image_path)[1].lower().lstrip(".")
-    mime = "image/jpeg" if ext in ("jpg", "jpeg") else f"image/{ext}"
-
-    message = HumanMessage(content=[
-        {
-            "type": "image_url",
-            "image_url": {"url": f"data:{mime};base64,{image_data}"},
-        },
-        {
-            "type": "text",
-            "text": (
-                "Look at this product image and extract its key attributes. "
-                "Return ONLY a JSON object with these fields:\n"
-                "- product_type: what kind of product it is (e.g. honey, olive oil, almonds)\n"
-                "- search_query: a short keyword to search for it (e.g. 'honey', 'olive oil')\n"
-                "- is_organic: true if the label says organic, false if not, null if unclear\n"
-                "- description: one sentence describing the product"
-            ),
-        },
-    ])
-
-    response = vision_llm.invoke([message])
-    return response.content
-
+search_products = tool(_search_products)
 
 if __name__ == "__main__":
     # Single product
-    result = search_products("honey")
+    result = _search_products("honey")
     print("Search results for 'honey':")
     print(result)
 
