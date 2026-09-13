@@ -7,7 +7,7 @@ import base64
 import json
 import os
 import sqlite3
-from typing import Optional
+from typing import Optional, Union
 
 from dotenv import load_dotenv
 from langchain.agents import create_agent
@@ -18,13 +18,16 @@ from langchain_groq import ChatGroq
 DB_PATH = os.path.join(os.path.dirname(__file__), "store.db")
 
 
-def _search_products(query: str, max_price: Optional[float] = None, is_organic: Optional[bool] = None) -> str:
+def _search_products(query: str, max_price: Optional[float] = None, is_organic: Optional[Union[bool, str]] = None) -> str:
     """
     Search the product database by keyword (matched against name, description, and category).
     Optionally filter by maximum price and/or organic status.
     Returns a JSON array of matching products, each with: id, name, category, price,
     description, is_organic.
     """
+    if isinstance(is_organic, str):
+        is_organic = is_organic.strip().lower() in ("true", "1", "yes")
+
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
