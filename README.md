@@ -11,6 +11,9 @@
 - Create a notebook to call llm
     `python -m notebook`
 
+- run streamlit app 
+` uv run streamlit run 10_ai_assistant_project/app.py`
+
 # 2. Health Analysis 
 workflow 
 ![Health analysis workflow](2_health_analysis/work-flow.png)
